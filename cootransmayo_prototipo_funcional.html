@@ -1,0 +1,724 @@
+
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --c1:#E8161E;--c1d:#B01018;--c2:#1a1a2e;--c3:#16213e;
+    --white:#fff;--gray:#f5f5f5;--gray2:#e8e8e8;--gray3:#999;
+    --text:#1a1a2e;--textm:#555;--radius:8px;--shadow:0 2px 8px rgba(0,0,0,.12)
+  }
+  body{font-family:'Segoe UI',Arial,sans-serif;color:var(--text);background:#fff}
+  #app{max-width:960px;margin:0 auto;border:1px solid #ddd;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.15)}
+  
+  /* NAV */
+  nav{background:var(--c2);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:58px;position:sticky;top:0;z-index:100}
+  .logo-wrap{display:flex;align-items:center;gap:10px;cursor:pointer}
+  .logo-wrap img{height:38px;object-fit:contain}
+  .logo-txt{color:#fff;font-size:13px;font-weight:600;line-height:1.2}
+  .logo-txt span{display:block;font-weight:300;font-size:11px;color:#aaa}
+  .nav-links{display:flex;gap:4px;align-items:center}
+  .nav-links button{background:none;border:none;color:#ddd;font-size:12px;padding:6px 10px;border-radius:6px;cursor:pointer;transition:.2s;font-family:inherit}
+  .nav-links button:hover{background:rgba(255,255,255,.1);color:#fff}
+  .nav-links button.active{color:#fff;font-weight:600}
+  .nav-cta{background:var(--c1)!important;color:#fff!important;border-radius:20px!important;padding:7px 16px!important;font-weight:600!important}
+  .nav-cta:hover{background:var(--c1d)!important}
+
+  /* PÁGINAS */
+  .page{display:none;animation:fadeIn .3s}
+  .page.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* HOME */
+  .hero{position:relative;height:420px;overflow:hidden}
+  .hero img{width:100%;height:100%;object-fit:cover}
+  .hero-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(26,26,46,.55) 0%,rgba(26,26,46,.8) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+  .hero h1{color:#fff;font-size:28px;font-weight:700;text-align:center;margin-bottom:6px;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+  .hero p{color:rgba(255,255,255,.85);font-size:14px;margin-bottom:24px}
+  .search-box{background:#fff;border-radius:12px;padding:20px;width:100%;max-width:680px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
+  .search-box h3{font-size:14px;color:var(--textm);margin-bottom:14px;font-weight:600;letter-spacing:.3px}
+  .search-row{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end}
+  .search-field label{display:block;font-size:11px;color:var(--gray3);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+  .search-field select,.search-field input{width:100%;padding:9px 12px;border:1.5px solid var(--gray2);border-radius:8px;font-size:13px;color:var(--text);background:#fff;outline:none;font-family:inherit}
+  .search-field select:focus,.search-field input:focus{border-color:var(--c1)}
+  .btn-search{background:var(--c1);color:#fff;border:none;border-radius:8px;padding:9px 22px;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;transition:.2s}
+  .btn-search:hover{background:var(--c1d)}
+
+  .destinos-sec{padding:32px 24px}
+  .sec-title{font-size:18px;font-weight:700;color:var(--c2);margin-bottom:6px}
+  .sec-sub{font-size:13px;color:var(--textm);margin-bottom:20px}
+  .destinos-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .dest-card{border-radius:10px;overflow:hidden;cursor:pointer;border:1.5px solid var(--gray2);transition:.2s;background:#fff}
+  .dest-card:hover{border-color:var(--c1);box-shadow:var(--shadow);transform:translateY(-2px)}
+  .dest-card img{width:100%;height:90px;object-fit:cover}
+  .dest-info{padding:8px 10px}
+  .dest-info h4{font-size:13px;font-weight:700;color:var(--c2)}
+  .dest-info p{font-size:11px;color:var(--textm)}
+  .dest-info .precio{font-size:12px;color:var(--c1);font-weight:700;margin-top:3px}
+
+  .servicios-sec{padding:24px;background:var(--gray)}
+  .servicios-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .serv-card{background:#fff;border-radius:10px;padding:18px;border:1.5px solid var(--gray2);cursor:pointer;transition:.2s;display:flex;align-items:flex-start;gap:12px}
+  .serv-card:hover{border-color:var(--c1);box-shadow:var(--shadow)}
+  .serv-icon{width:42px;height:42px;background:rgba(232,22,30,.1);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px}
+  .serv-body h4{font-size:13px;font-weight:700;color:var(--c2);margin-bottom:3px}
+  .serv-body p{font-size:12px;color:var(--textm);line-height:1.4}
+
+  /* BREADCRUMB */
+  .breadcrumb{padding:10px 24px;background:var(--gray);font-size:12px;color:var(--gray3);display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--gray2)}
+  .breadcrumb span{cursor:pointer;color:var(--c1)}
+  .breadcrumb span:hover{text-decoration:underline}
+  .breadcrumb i{font-size:10px}
+
+  /* RESULTADOS */
+  .resultados-header{padding:20px 24px;border-bottom:1px solid var(--gray2);background:#fff}
+  .resultados-header h2{font-size:17px;font-weight:700;color:var(--c2)}
+  .resultados-header p{font-size:13px;color:var(--textm);margin-top:2px}
+  .res-search-bar{display:flex;gap:8px;margin-top:14px;align-items:center;flex-wrap:wrap}
+  .res-search-bar select,.res-search-bar input{padding:7px 12px;border:1.5px solid var(--gray2);border-radius:8px;font-size:12px;color:var(--text);background:#fff;outline:none;font-family:inherit}
+  .res-search-bar select:focus,.res-search-bar input:focus{border-color:var(--c1)}
+  .resultados-body{display:grid;grid-template-columns:220px 1fr;gap:0;min-height:400px}
+  .filtros{padding:20px;border-right:1px solid var(--gray2);background:var(--gray)}
+  .filtros h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--textm);margin-bottom:12px}
+  .filtro-group{margin-bottom:20px}
+  .filtro-group label{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;padding:4px 0;color:var(--text)}
+  .filtro-group input[type=checkbox]{accent-color:var(--c1);width:14px;height:14px}
+  .filtro-group input[type=range]{width:100%;accent-color:var(--c1);margin-top:6px}
+  .price-range{display:flex;justify-content:space-between;font-size:11px;color:var(--textm);margin-top:3px}
+  .lista-res{padding:16px}
+  .res-item{background:#fff;border:1.5px solid var(--gray2);border-radius:10px;padding:16px;margin-bottom:12px;display:grid;grid-template-columns:1fr auto;gap:12px;transition:.2s;cursor:pointer}
+  .res-item:hover{border-color:var(--c1);box-shadow:var(--shadow)}
+  .res-item .hora{font-size:22px;font-weight:700;color:var(--c2)}
+  .res-item .servicio{font-size:12px;color:var(--textm);margin-top:2px}
+  .res-item .badges{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+  .badge{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600}
+  .badge-pref{background:rgba(232,22,30,.1);color:var(--c1d)}
+  .badge-waira{background:rgba(26,26,46,.1);color:var(--c2)}
+  .badge-ac{background:#e8f5e9;color:#2e7d32}
+  .res-precio{text-align:right}
+  .res-precio .precio{font-size:22px;font-weight:700;color:var(--c1)}
+  .res-precio .precio-sub{font-size:11px;color:var(--textm)}
+  .btn-comprar{margin-top:10px;background:var(--c1);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;width:100%;font-family:inherit;transition:.2s}
+  .btn-comprar:hover{background:var(--c1d)}
+
+  /* SERVICIOS PAGE */
+  .serv-page-header{height:200px;position:relative;overflow:hidden}
+  .serv-page-header img{width:100%;height:100%;object-fit:cover}
+  .serv-page-header .overlay{position:absolute;inset:0;background:rgba(26,26,46,.7);display:flex;align-items:center;padding:24px}
+  .serv-page-header h1{color:#fff;font-size:24px;font-weight:700}
+  .serv-page-header p{color:rgba(255,255,255,.8);font-size:13px;margin-top:6px}
+  .serv-page-body{padding:24px;display:grid;grid-template-columns:1fr 260px;gap:24px}
+  .serv-desc p{font-size:14px;line-height:1.7;color:var(--textm);margin-bottom:14px}
+  .serv-features{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .feat-item{background:var(--gray);border-radius:8px;padding:12px;display:flex;align-items:center;gap:8px}
+  .feat-item span{font-size:12px;color:var(--text)}
+  .serv-sidebar{position:sticky;top:70px}
+  .sidebar-card{background:#fff;border:1.5px solid var(--gray2);border-radius:10px;padding:18px;margin-bottom:14px}
+  .sidebar-card h4{font-size:13px;font-weight:700;color:var(--c2);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--gray2)}
+  .sidebar-card .precio-big{font-size:28px;font-weight:700;color:var(--c1);margin-bottom:4px}
+  .sidebar-card .precio-from{font-size:12px;color:var(--textm);margin-bottom:12px}
+  .rutas-list{list-style:none}
+  .rutas-list li{padding:7px 0;border-bottom:1px solid var(--gray2);font-size:12px;color:var(--text);display:flex;justify-content:space-between}
+  .rutas-list li:last-child{border-bottom:none}
+  .rutas-list .tiempo{color:var(--textm);font-size:11px}
+  .ctx-links a{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:8px;font-size:12px;color:var(--c1);text-decoration:none;transition:.2s;cursor:pointer}
+  .ctx-links a:hover{background:rgba(232,22,30,.06)}
+
+  /* CONTACTO */
+  .contacto-body{padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:28px}
+  .contacto-info h3{font-size:16px;font-weight:700;color:var(--c2);margin-bottom:14px}
+  .info-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px}
+  .info-icon{width:36px;height:36px;background:rgba(232,22,30,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+  .info-item p{font-size:13px;font-weight:600;color:var(--c2);margin-bottom:1px}
+  .info-item span{font-size:12px;color:var(--textm)}
+  .horario-box{background:var(--gray);border-radius:10px;padding:16px;margin-top:14px}
+  .horario-box h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--textm);margin-bottom:10px}
+  .horario-row{display:flex;justify-content:space-between;font-size:12px;color:var(--text);padding:4px 0}
+  .form-group{margin-bottom:14px}
+  .form-group label{display:block;font-size:12px;font-weight:600;color:var(--c2);margin-bottom:5px}
+  .form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 12px;border:1.5px solid var(--gray2);border-radius:8px;font-size:13px;font-family:inherit;color:var(--text);outline:none}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--c1)}
+  .form-group textarea{resize:vertical;min-height:90px}
+  .btn-enviar{background:var(--c1);color:#fff;border:none;border-radius:8px;padding:11px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s}
+  .btn-enviar:hover{background:var(--c1d)}
+
+  /* FOOTER */
+  footer{background:var(--c2);color:#fff;padding:24px}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:24px;margin-bottom:20px}
+  .footer-brand img{height:40px;margin-bottom:10px;filter:brightness(10)}
+  .footer-brand p{font-size:12px;color:#aaa;line-height:1.6}
+  .footer-col h5{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#aaa;margin-bottom:10px}
+  .footer-col a{display:block;font-size:12px;color:#ccc;text-decoration:none;margin-bottom:6px;cursor:pointer;transition:.2s}
+  .footer-col a:hover{color:#fff}
+  .footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:16px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#888}
+
+  /* COMPRA MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center}
+  .modal{background:#fff;border-radius:14px;width:440px;max-width:95vw;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,.3)}
+  .modal-header{background:var(--c2);padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
+  .modal-header h3{color:#fff;font-size:15px;font-weight:700}
+  .modal-header button{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;padding:0;line-height:1}
+  .modal-body{padding:20px}
+  .modal-ruta{background:var(--gray);border-radius:8px;padding:14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+  .modal-ruta .ruta-nombre{font-size:14px;font-weight:700;color:var(--c2)}
+  .modal-ruta .ruta-info{font-size:12px;color:var(--textm);margin-top:2px}
+  .modal-ruta .precio-modal{font-size:20px;font-weight:700;color:var(--c1)}
+  .paso-indicator{display:flex;gap:8px;margin-bottom:18px}
+  .paso{flex:1;height:3px;border-radius:2px;background:var(--gray2)}
+  .paso.done{background:var(--c1)}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .seats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}
+  .seat{height:32px;border:1.5px solid var(--gray2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;font-weight:600;transition:.2s}
+  .seat.libre{color:var(--textm)}
+  .seat.libre:hover{border-color:var(--c1);color:var(--c1)}
+  .seat.ocupado{background:var(--gray2);color:var(--gray3);cursor:not-allowed}
+  .seat.seleccionado{background:var(--c1);border-color:var(--c1);color:#fff}
+  .modal-footer{padding:14px 20px;border-top:1px solid var(--gray2);display:flex;justify-content:space-between;align-items:center}
+  .modal-footer .total{font-size:15px;font-weight:700;color:var(--c2)}
+  .modal-footer .total span{color:var(--c1)}
+  .btn-next{background:var(--c1);color:#fff;border:none;border-radius:8px;padding:9px 24px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+
+  /* SOBRE */
+  .sobre-hero{height:180px;position:relative;overflow:hidden}
+  .sobre-hero img{width:100%;height:100%;object-fit:cover}
+  .sobre-hero .overlay{position:absolute;inset:0;background:rgba(26,26,46,.75);display:flex;align-items:center;padding:24px}
+  .sobre-hero h1{color:#fff;font-size:22px;font-weight:700}
+  .sobre-body{padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:28px}
+  .mv-card{background:var(--gray);border-radius:10px;padding:18px}
+  .mv-card h4{font-size:14px;font-weight:700;color:var(--c1);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .mv-card p{font-size:13px;line-height:1.7;color:var(--textm)}
+  .sobre-full{grid-column:1/-1}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:20px;right:20px;background:var(--c2);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;z-index:300;box-shadow:0 4px 16px rgba(0,0,0,.3);animation:slideIn .3s;display:none}
+  @keyframes slideIn{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+
+  .tag-desc{font-size:11px;background:rgba(232,22,30,.1);color:var(--c1d);padding:2px 8px;border-radius:20px;font-weight:600;white-space:nowrap}
+</style>
+
+<div id="app">
+  <nav>
+    <div class="logo-wrap" onclick="goTo('home')">
+      <img src="https://cootransmayo.com/wp-content/uploads/2025/04/logo_cootransmayo_OK.png" alt="Cootransmayo" onerror="this.style.display='none'">
+      <div class="logo-txt">COOTRANSMAYO<span>Cooperativa de Transportes del Putumayo</span></div>
+    </div>
+    <div class="nav-links">
+      <button onclick="goTo('home')" id="nb-home">Inicio</button>
+      <button onclick="goTo('resultados',{from:'Puerto Asís',to:'Bogotá',date:'2026-06-10'})" id="nb-rutas">Planea tu viaje</button>
+      <button onclick="goTo('servicio',{tipo:'preferencial'})" id="nb-serv">Nuestros servicios</button>
+      <button onclick="goTo('sobre')" id="nb-sobre">Sobre nosotros</button>
+      <button onclick="goTo('contacto')" id="nb-contact" class="nav-cta">Contacto</button>
+    </div>
+  </nav>
+
+  <!-- HOME -->
+  <div class="page" id="page-home">
+    <div class="hero">
+      <img src="https://cootransmayo.com/wp-content/uploads/2025/05/FOTO-2.jpg" alt="Cootransmayo" onerror="this.src='https://cootransmayo.com/wp-content/uploads/2025/05/FOTO-1.jpg'">
+      <div class="hero-overlay">
+        <h1>Conectamos destinos y acercamos corazones</h1>
+        <p>Transporte seguro y cómodo por todo el suroccidente colombiano</p>
+        <div class="search-box">
+          <h3>🔍 Buscar rutas disponibles</h3>
+          <div class="search-row">
+            <div class="search-field">
+              <label>Origen</label>
+              <select id="h-origen">
+                <option>Puerto Asís</option><option>Mocoa</option><option>La Hormiga</option><option>Pasto</option>
+              </select>
+            </div>
+            <div class="search-field">
+              <label>Destino</label>
+              <select id="h-destino">
+                <option>Bogotá</option><option>Cali</option><option>Neiva</option><option>Pitalito</option><option>Pasto</option><option>Popayán</option>
+              </select>
+            </div>
+            <div class="search-field">
+              <label>Fecha</label>
+              <input type="date" id="h-fecha" value="2026-06-10">
+            </div>
+            <button class="btn-search" onclick="buscar()">Buscar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="destinos-sec">
+      <div class="sec-title">Destinos populares</div>
+      <div class="sec-sub">Haz clic para ver horarios y precios disponibles</div>
+      <div class="destinos-grid">
+        <div class="dest-card" onclick="goTo('resultados',{from:'Puerto Asís',to:'Bogotá',date:'2026-06-10'})">
+          <img src="https://cootransmayo.com/wp-content/uploads/2025/05/FOTO-4-768x432.jpg" alt="Bogotá">
+          <div class="dest-info"><h4>Bogotá</h4><p>Preferencial · Waira</p><div class="precio">Desde $95.000</div></div>
+        </div>
+        <div class="dest-card" onclick="goTo('resultados',{from:'Puerto Asís',to:'Cali',date:'2026-06-10'})">
+          <img src="https://cootransmayo.com/wp-content/uploads/2025/05/FOTO-5-768x432.jpg" alt="Cali">
+          <div class="dest-info"><h4>Cali</h4><p>Línea Preferencial</p><div class="precio">Desde $78.000</div></div>
+        </div>
+        <div class="dest-card" onclick="goTo('resultados',{from:'Puerto Asís',to:'Neiva',date:'2026-06-10'})">
+          <img src="https://cootransmayo.com/wp-content/uploads/2025/05/FOTO-6-768x432.jpg" alt="Neiva">
+          <div class="dest-info"><h4>Neiva</h4><p>Preferencial · Waira</p><div class="precio">Desde $65.000</div></div>
+        </div>
+        <div class="dest-card" onclick="goTo('resultados',{from:'Puerto Asís',to:'Pitalito',date:'2026-06-10'})">
+          <img src="https://cootransmayo.com/wp-content/uploads/2025/05/FOTO-7-768x432.jpg" alt="Pitalito">
+          <div class="dest-info"><h4>Pitalito</h4><p>Preferencial · Waira</p><div class="precio">Desde $42.000</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="servicios-sec">
+      <div class="sec-title" style="margin-bottom:6px">Nuestros servicios</div>
+      <div class="sec-sub">Elige el servicio que mejor se adapta a tu viaje</div>
+      <div class="servicios-grid">
+        <div class="serv-card" onclick="goTo('servicio',{tipo:'preferencial'})">
+          <div class="serv-icon">🚌</div>
+          <div class="serv-body"><h4>Bus Preferencial</h4><p>Servicio de larga distancia, A/C, reclinables. Hasta 38 pasajeros.</p></div>
+        </div>
+        <div class="serv-card" onclick="goTo('servicio',{tipo:'waira'})">
+          <div class="serv-icon">⭐</div>
+          <div class="serv-body"><h4>Servicio Waira (VIP)</h4><p>Bus doble piso de lujo. A/C, WiFi, asientos VIP. 44 pasajeros.</p></div>
+        </div>
+        <div class="serv-card" onclick="goTo('servicio',{tipo:'regional'})">
+          <div class="serv-icon">🚐</div>
+          <div class="serv-body"><h4>Regional (Aerovan · Microbús)</h4><p>Rutas locales e intermunicipales. Camionetas, aerovans y microbuses.</p></div>
+        </div>
+        <div class="serv-card" onclick="goTo('servicio',{tipo:'encomiendas'})">
+          <div class="serv-icon">📦</div>
+          <div class="serv-body"><h4>Encomiendas y envíos</h4><p>Envía paquetes a cualquier destino de nuestra red de manera rápida y segura.</p></div>
+        </div>
+        <div class="serv-card" onclick="showToast('Próximamente: sección de Transporte Especial')">
+          <div class="serv-icon">🚗</div>
+          <div class="serv-body"><h4>Transporte especial</h4><p>Expresos y servicios grupales a cualquier parte del país.</p></div>
+        </div>
+        <div class="serv-card" onclick="showToast('Próximamente: sección de Alquiler de Vehículos')">
+          <div class="serv-icon">🔑</div>
+          <div class="serv-body"><h4>Alquiler de vehículos</h4><p>Arrienda vehículos para grupos, empresas o eventos especiales.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:24px;display:flex;gap:16px;align-items:center;background:#fff4f4;border-top:1px solid #fdd">
+      <div style="font-size:28px">📞</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:var(--c2)">¿Necesitas ayuda? Llámanos o escríbenos</div>
+        <div style="font-size:13px;color:var(--textm);margin-top:3px">Cel: 321 4107493 · WhatsApp: 322 7667697 · <b>Carrera 19 #10-09, Puerto Asís, Putumayo</b></div>
+      </div>
+      <button onclick="goTo('contacto')" style="margin-left:auto;background:var(--c1);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">Contáctanos</button>
+    </div>
+
+    <footer>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="https://cootransmayo.com/wp-content/uploads/2025/04/logo_cootransmayo_OK.png" alt="Cootransmayo">
+          <p>Cooperativa de Transportadores del Putumayo "COOTRANSMAYO LTDA". Conectamos destinos y acercamos corazones desde 1996.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Navegar</h5>
+          <a onclick="goTo('resultados',{from:'Puerto Asís',to:'Bogotá',date:'2026-06-10'})">Planea tu viaje</a>
+          <a onclick="goTo('servicio',{tipo:'preferencial'})">Bus Preferencial</a>
+          <a onclick="goTo('servicio',{tipo:'waira'})">Servicio Waira</a>
+          <a onclick="goTo('servicio',{tipo:'encomiendas'})">Encomiendas</a>
+          <a onclick="goTo('sobre')">Sobre Cootransmayo</a>
+        </div>
+        <div class="footer-col">
+          <h5>Contacto</h5>
+          <a>Cra 19 #10-09, Puerto Asís</a>
+          <a>321 4107493</a>
+          <a>cootransmayoltda@gmail.com</a>
+          <a onclick="goTo('contacto')">Peticiones y Quejas (PQR)</a>
+          <a onclick="showToast('Términos y condiciones de uso')">Términos y condiciones</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Cootransmayo · Todos los derechos reservados</span>
+        <span>Prototipo de rediseño AI · Anderson Vinasco & Fabian Guevara</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- RESULTADOS -->
+  <div class="page" id="page-resultados">
+    <div class="breadcrumb">
+      <span onclick="goTo('home')">Inicio</span>
+      <i class="ti ti-chevron-right"></i>
+      <span>Planea tu viaje</span>
+      <i class="ti ti-chevron-right"></i>
+      <span id="bc-ruta">Puerto Asís → Bogotá</span>
+    </div>
+    <div class="resultados-header">
+      <h2 id="res-titulo">Rutas disponibles: Puerto Asís → Bogotá</h2>
+      <p id="res-sub">Miércoles, 10 de junio de 2026 · 8 resultados</p>
+      <div class="res-search-bar">
+        <select id="r-origen"><option>Puerto Asís</option><option>Mocoa</option><option>La Hormiga</option></select>
+        <i class="ti ti-arrows-right-left" style="color:#ccc"></i>
+        <select id="r-destino"><option>Bogotá</option><option>Cali</option><option>Neiva</option><option>Pitalito</option></select>
+        <input type="date" id="r-fecha" value="2026-06-10">
+        <button class="btn-search" style="padding:7px 16px;font-size:12px" onclick="buscarResultados()">Actualizar</button>
+      </div>
+    </div>
+    <div class="resultados-body">
+      <div class="filtros">
+        <h4>Filtros</h4>
+        <div class="filtro-group">
+          <b style="font-size:12px;color:var(--text)">Tipo de servicio</b>
+          <label style="margin-top:8px"><input type="checkbox" checked> Bus Preferencial</label>
+          <label><input type="checkbox" checked> Servicio Waira (VIP)</label>
+          <label><input type="checkbox"> Aerovan / Microbús</label>
+        </div>
+        <div class="filtro-group">
+          <b style="font-size:12px;color:var(--text)">Hora de salida</b>
+          <label style="margin-top:8px"><input type="checkbox" checked> Mañana (4am–12pm)</label>
+          <label><input type="checkbox" checked> Tarde (12pm–6pm)</label>
+          <label><input type="checkbox"> Noche (6pm–12am)</label>
+        </div>
+        <div class="filtro-group">
+          <b style="font-size:12px;color:var(--text)">Precio máximo</b>
+          <input type="range" min="50000" max="150000" value="150000" step="5000" oninput="document.getElementById('price-out').textContent='$'+Number(this.value).toLocaleString()">
+          <div class="price-range"><span>$50.000</span><span id="price-out">$150.000</span></div>
+        </div>
+      </div>
+      <div class="lista-res" id="lista-resultados">
+        <!-- generado por JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICIO DETALLE -->
+  <div class="page" id="page-servicio">
+    <div class="breadcrumb">
+      <span onclick="goTo('home')">Inicio</span>
+      <i class="ti ti-chevron-right"></i>
+      <span onclick="goTo('home')" >Nuestros servicios</span>
+      <i class="ti ti-chevron-right"></i>
+      <span id="serv-bc">Bus Preferencial</span>
+    </div>
+    <div class="serv-page-header">
+      <img id="serv-img" src="https://cootransmayo.com/wp-content/uploads/2025/05/FOTO-3-768x432.jpg" alt="">
+      <div class="overlay">
+        <div>
+          <h1 id="serv-titulo">Bus Preferencial</h1>
+          <p id="serv-subtit">Servicio de larga distancia · Aire acondicionado · Asientos reclinables</p>
+        </div>
+      </div>
+    </div>
+    <div class="serv-page-body">
+      <div class="serv-desc">
+        <p id="serv-desc-txt">En Cootransmayo, el servicio Preferencial está diseñado para ofrecerte la mejor experiencia de viaje en larga distancia. Contamos con buses modernos equipados con aire acondicionado, asientos reclinables de alta comodidad y un conductor experimentado.</p>
+        <p>Nuestros buses Preferenciales cubren las principales rutas del sur del país, conectando Puerto Asís con ciudades como Bogotá, Cali, Neiva y Pitalito, con salidas diarias y múltiples horarios para adaptarse a tus necesidades.</p>
+        <div class="serv-features" id="serv-features">
+          <div class="feat-item"><span>🌡️ Aire acondicionado</span></div>
+          <div class="feat-item"><span>💺 Asientos reclinables</span></div>
+          <div class="feat-item"><span>🧳 Equipaje incluido</span></div>
+          <div class="feat-item"><span>⏱️ Salidas diarias</span></div>
+          <div class="feat-item"><span>🔒 Seguro de viaje</span></div>
+          <div class="feat-item"><span>👨‍✈️ Conductor certificado</span></div>
+        </div>
+      </div>
+      <div class="serv-sidebar">
+        <div class="sidebar-card">
+          <h4>Reserva tu tiquete</h4>
+          <div class="precio-big" id="serv-precio">Desde $65.000</div>
+          <div class="precio-from">por persona · tarifa sujeta a disponibilidad</div>
+          <button class="btn-comprar" onclick="abrirModal()">Comprar tiquete</button>
+        </div>
+        <div class="sidebar-card">
+          <h4>Rutas disponibles</h4>
+          <ul class="rutas-list" id="serv-rutas">
+            <li>Puerto Asís → Bogotá<span class="tiempo">~14h</span></li>
+            <li>Puerto Asís → Cali<span class="tiempo">~10h</span></li>
+            <li>Puerto Asís → Neiva<span class="tiempo">~7h</span></li>
+            <li>Puerto Asís → Pitalito<span class="tiempo">~4h</span></li>
+          </ul>
+        </div>
+        <div class="sidebar-card">
+          <h4>También te puede interesar</h4>
+          <div class="ctx-links">
+            <a onclick="goTo('resultados',{from:'Puerto Asís',to:'Bogotá',date:'2026-06-10'})"><i class="ti ti-calendar" style="font-size:14px"></i>Ver horarios disponibles</a>
+            <a onclick="showToast('Tabla de tarifas completa disponible en el prototipo final')"><i class="ti ti-receipt" style="font-size:14px"></i>Consultar tarifas</a>
+            <a onclick="goTo('servicio',{tipo:'waira'})"><i class="ti ti-arrow-right" style="font-size:14px"></i>Ver Servicio Waira (VIP)</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOBRE -->
+  <div class="page" id="page-sobre">
+    <div class="breadcrumb">
+      <span onclick="goTo('home')">Inicio</span>
+      <i class="ti ti-chevron-right"></i>
+      <span>Sobre Cootransmayo</span>
+    </div>
+    <div class="sobre-hero">
+      <img src="https://cootransmayo.com/wp-content/uploads/2025/05/FOTO-9-768x432.jpg" alt="Cootransmayo">
+      <div class="overlay"><h1>Orgullo y patrimonio putumayense</h1></div>
+    </div>
+    <div class="sobre-body">
+      <div class="mv-card">
+        <h4>🎯 Misión</h4>
+        <p>Atender las necesidades de transporte de pasajeros y carga de forma ágil, eficiente y segura, contribuyendo al desarrollo del suroccidente colombiano mediante una economía solidaria comprometida con el bienestar de nuestros asociados y usuarios.</p>
+      </div>
+      <div class="mv-card">
+        <h4>🌟 Visión</h4>
+        <p>Ser la cooperativa de transporte de referencia en el sur de Colombia para el año 2030, reconocida por la calidad de su servicio, la innovación digital y el compromiso con las comunidades de la región.</p>
+      </div>
+      <div class="sobre-full">
+        <div class="mv-card" style="background:#fff;border:1.5px solid var(--gray2)">
+          <h4>📖 Nuestra historia</h4>
+          <p style="margin-bottom:10px">La Cooperativa de Transportadores del Putumayo "COOTRANSMAYO LTDA." fue fundada en 1996 en Puerto Asís, Putumayo, con el propósito de garantizar el transporte de pasajeros en una región que carecía de alternativas formales de movilidad. Desde sus inicios, la empresa ha crecido para cubrir departamentos como Putumayo, Nariño, Caquetá, Huila, Valle del Cauca y Cundinamarca.</p>
+          <p>Hoy, Cootransmayo cuenta con una flota moderna que incluye buses preferenciales, el servicio Waira de dos pisos, aerovans, microbuses y camionetas 4x4, respondiendo a la diversidad geográfica y cultural del suroccidente colombiano.</p>
+        </div>
+      </div>
+      <div>
+        <div class="mv-card" style="background:#fff;border:1.5px solid var(--gray2)">
+          <h4>📍 Dónde encontrarnos</h4>
+          <p>Carrera 19 #10-09, Puerto Asís, Putumayo<br>Lun-Vie: 8:00AM – 6:00PM<br>Sáb: 8:00AM – 12:00PM</p>
+        </div>
+      </div>
+      <div>
+        <div class="mv-card" style="background:#fff4f4;border:1.5px solid #fdd">
+          <h4 style="color:var(--c1)">✅ Nuestros valores</h4>
+          <p>Seguridad · Puntualidad · Respeto · Compromiso · Solidaridad</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACTO -->
+  <div class="page" id="page-contacto">
+    <div class="breadcrumb">
+      <span onclick="goTo('home')">Inicio</span>
+      <i class="ti ti-chevron-right"></i>
+      <span>Ayuda y contacto</span>
+    </div>
+    <div style="padding:20px 24px;border-bottom:1px solid var(--gray2)">
+      <h2 style="font-size:18px;font-weight:700;color:var(--c2)">Ayuda y contacto</h2>
+      <p style="font-size:13px;color:var(--textm);margin-top:3px">Estamos aquí para ayudarte. Escríbenos o llámanos.</p>
+    </div>
+    <div class="contacto-body">
+      <div class="contacto-info">
+        <h3>Información de contacto</h3>
+        <div class="info-item"><div class="info-icon">📍</div><div><p>Dirección</p><span>Carrera 19 #10-09, Puerto Asís, Putumayo</span></div></div>
+        <div class="info-item"><div class="info-icon">📞</div><div><p>Teléfono</p><span>321 4107493</span></div></div>
+        <div class="info-item"><div class="info-icon">💬</div><div><p>WhatsApp</p><span>322 7667697</span></div></div>
+        <div class="info-item"><div class="info-icon">📧</div><div><p>Correo general</p><span>cootransmayoltda@gmail.com</span></div></div>
+        <div class="info-item"><div class="info-icon">⚖️</div><div><p>Notificaciones judiciales</p><span>notificacionesjudiciales@cootransmayoltda.com</span></div></div>
+        <div class="horario-box">
+          <h4>Horario de atención</h4>
+          <div class="horario-row"><span>Lunes – Viernes</span><span>8:00 AM – 12:00 PM / 2:00 – 6:00 PM</span></div>
+          <div class="horario-row"><span>Sábado</span><span>8:00 AM – 12:00 PM</span></div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:16px;font-weight:700;color:var(--c2);margin-bottom:14px">Envíanos un mensaje</h3>
+        <div class="form-group">
+          <label>Tipo de solicitud</label>
+          <select>
+            <option>Información general</option>
+            <option>Petición, Queja o Reclamo (PQR)</option>
+            <option>Encomiendas</option>
+            <option>Transporte especial</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Nombre</label><input type="text" placeholder="Tu nombre completo"></div>
+          <div class="form-group"><label>Teléfono</label><input type="tel" placeholder="3XX XXX XXXX"></div>
+        </div>
+        <div class="form-group"><label>Correo electrónico</label><input type="email" placeholder="correo@ejemplo.com"></div>
+        <div class="form-group"><label>Mensaje</label><textarea placeholder="Escribe tu consulta aquí..."></textarea></div>
+        <button class="btn-enviar" onclick="showToast('✅ Mensaje enviado. Te contactaremos pronto.')">Enviar mensaje</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL COMPRA -->
+<div class="modal-overlay" id="modal-compra" style="display:none" onclick="if(event.target===this)cerrarModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Comprar tiquete</h3>
+      <button onclick="cerrarModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-ruta">
+        <div><div class="ruta-nombre" id="m-ruta">Puerto Asís → Bogotá</div><div class="ruta-info" id="m-info">Bus Preferencial · Lun 10 Jun, 6:00 AM</div></div>
+        <div class="precio-modal" id="m-precio">$95.000</div>
+      </div>
+      <div class="paso-indicator"><div class="paso done"></div><div class="paso" id="p2"></div><div class="paso" id="p3"></div></div>
+      <div id="step1">
+        <div class="form-row">
+          <div class="form-group"><label>Nombre del pasajero</label><input type="text" placeholder="Nombre completo"></div>
+          <div class="form-group"><label>N.° de documento</label><input type="text" placeholder="Cédula o tarjeta"></div>
+        </div>
+        <div class="form-group"><label>Elige tu asiento</label>
+          <div class="seats-grid" id="seats"></div>
+        </div>
+      </div>
+      <div id="step2" style="display:none">
+        <p style="font-size:13px;color:var(--textm);margin-bottom:14px">Método de pago</p>
+        <div class="form-group"><label>Número de tarjeta</label><input type="text" placeholder="XXXX XXXX XXXX XXXX"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Vencimiento</label><input type="text" placeholder="MM/AA"></div>
+          <div class="form-group"><label>CVV</label><input type="text" placeholder="XXX"></div>
+        </div>
+      </div>
+      <div id="step3" style="display:none;text-align:center;padding:20px 0">
+        <div style="font-size:48px;margin-bottom:12px">✅</div>
+        <h3 style="font-size:16px;color:var(--c2);margin-bottom:6px">¡Tiquete confirmado!</h3>
+        <p style="font-size:13px;color:var(--textm)">Recibirás tu tiquete por correo electrónico. <b>Código de reserva: CTM-2026-4821</b></p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <div class="total">Total: <span id="m-total">$95.000</span></div>
+      <button class="btn-next" id="btn-modal-next" onclick="nextStep()">Continuar →</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const RESULTADOS = [
+  {hora:'6:00 AM',dur:'14h',serv:'Bus Precio',tipo:'preferencial',precio:95000,asientos:18,badges:['badge-pref','badge-ac'],badgeLbl:['Preferencial','A/C']},
+  {hora:'7:30 AM',dur:'14h',serv:'Servicio Waira VIP',tipo:'waira',precio:115000,asientos:8,badges:['badge-waira','badge-ac'],badgeLbl:['Waira VIP','WiFi']},
+  {hora:'9:00 AM',dur:'14h',serv:'Bus Preferencial',tipo:'preferencial',precio:95000,asientos:22,badges:['badge-pref','badge-ac'],badgeLbl:['Preferencial','A/C']},
+  {hora:'11:00 AM',dur:'14h',serv:'Bus Preferencial',tipo:'preferencial',precio:90000,asientos:5,badges:['badge-pref'],badgeLbl:['Preferencial']},
+  {hora:'2:00 PM',dur:'14h',serv:'Servicio Waira VIP',tipo:'waira',precio:120000,asientos:14,badges:['badge-waira','badge-ac'],badgeLbl:['Waira VIP','WiFi']},
+  {hora:'4:30 PM',dur:'14h',serv:'Bus Preferencial',tipo:'preferencial',precio:88000,asientos:30,badges:['badge-pref','badge-ac'],badgeLbl:['Preferencial','A/C']},
+];
+
+const SERVICIOS = {
+  preferencial:{titulo:'Bus Preferencial',subtit:'Servicio de larga distancia · Aire acondicionado · Asientos reclinables',img:'https://cootransmayo.com/wp-content/uploads/2025/05/FOTO-3-768x432.jpg',precio:'Desde $65.000',desc:'En Cootransmayo, el servicio Preferencial está diseñado para ofrecerte la mejor experiencia de viaje en larga distancia. Contamos con buses modernos equipados con aire acondicionado, asientos reclinables de alta comodidad y conductor experimentado.',features:['🌡️ Aire acondicionado','💺 Asientos reclinables','🧳 Equipaje incluido','⏱️ Salidas diarias','🔒 Seguro de viaje','👨‍✈️ Conductor certificado'],rutas:[['Puerto Asís → Bogotá','~14h'],['Puerto Asís → Cali','~10h'],['Puerto Asís → Neiva','~7h'],['Puerto Asís → Pitalito','~4h']]},
+  waira:{titulo:'Servicio Waira (VIP)',subtit:'Bus doble piso de lujo · WiFi · Asientos VIP · Hasta 44 pasajeros',img:'https://cootransmayo.com/wp-content/uploads/2025/05/FOTO-8-768x432.jpg',precio:'Desde $95.000',desc:'El Servicio Waira es la experiencia premium de Cootransmayo. Viaja en nuestros exclusivos buses de dos pisos con asientos VIP, WiFi a bordo, aire acondicionado y la mayor comodidad para tus viajes de larga distancia.',features:['⭐ Asientos VIP doble piso','📶 WiFi a bordo','🌡️ Aire acondicionado','🎬 Entretenimiento','🧳 Equipaje plus','☕ Servicio a bordo'],rutas:[['Puerto Asís → Bogotá','~14h'],['Puerto Asís → Neiva','~7h'],['Puerto Asís → Pitalito','~4h']]},
+  regional:{titulo:'Servicio Regional',subtit:'Aerovans · Microbuses · Camionetas 4×4 para rutas locales',img:'https://cootransmayo.com/wp-content/uploads/2025/05/FOTO-5-768x432.jpg',precio:'Desde $18.000',desc:'Para rutas cortas e intermunicipales en el departamento del Putumayo, Cootransmayo ofrece servicios en aerovans, microbuses y camionetas 4x4, ideales para zonas de difícil acceso y destinos locales.',features:['🚐 Aerovans minivan','🚌 Microbús','🚙 Camioneta 4×4','📍 Rutas locales','⏰ Alta frecuencia','💰 Tarifa económica'],rutas:[['Puerto Asís → Mocoa','~2h'],['Puerto Asís → La Hormiga','~1.5h'],['Mocoa → Pasto','~3h']]},
+  encomiendas:{titulo:'Encomiendas y envíos',subtit:'Envía tus paquetes de forma rápida y segura por toda nuestra red',img:'https://cootransmayo.com/wp-content/uploads/2025/05/FOTO-6-768x432.jpg',precio:'Desde $8.000',desc:'El servicio de encomiendas de Cootransmayo te permite enviar paquetes, documentos y mercancía a todos los destinos de nuestra red. Garantizamos seguridad, rapidez y tarifas competitivas para personas y comerciantes.',features:['📦 Paquetes hasta 50kg','⚡ Entrega express','📋 Guía de rastreo','💼 Mercancía comercial','🏘️ Cobertura rural','💳 Pago en línea'],rutas:[['Puerto Asís ↔ Bogotá','2-3 días'],['Puerto Asís ↔ Cali','2 días'],['Intermunicipal Putumayo','1 día']]},
+};
+
+let currentStep=1, selectedSeat=null;
+
+function goTo(pg,params={}){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+pg).classList.add('active');
+  document.querySelectorAll('.nav-links button').forEach(b=>b.classList.remove('active'));
+  if(pg==='home')document.getElementById('nb-home').classList.add('active');
+  if(pg==='resultados')document.getElementById('nb-rutas').classList.add('active');
+  if(pg==='servicio')document.getElementById('nb-serv').classList.add('active');
+  if(pg==='sobre')document.getElementById('nb-sobre').classList.add('active');
+  if(pg==='contacto')document.getElementById('nb-contact').classList.add('active');
+  if(pg==='resultados') renderResultados(params);
+  if(pg==='servicio') renderServicio(params);
+  document.getElementById('app').scrollIntoView({behavior:'smooth'});
+}
+
+function renderResultados(p){
+  const from=p.from||'Puerto Asís', to=p.to||'Bogotá';
+  document.getElementById('res-titulo').textContent='Rutas disponibles: '+from+' → '+to;
+  document.getElementById('res-sub').textContent='Miércoles, 10 de junio de 2026 · '+RESULTADOS.length+' resultados';
+  document.getElementById('bc-ruta').textContent=from+' → '+to;
+  const c=document.getElementById('lista-resultados');
+  c.innerHTML=RESULTADOS.map((r,i)=>`
+    <div class="res-item" onclick="goTo('servicio',{tipo:'${r.tipo}'})">
+      <div>
+        <div class="hora">${r.hora}</div>
+        <div class="servicio">${r.serv} · Duración aprox. ${r.dur}</div>
+        <div class="badges">${r.badges.map((b,j)=>`<span class="badge ${b}">${r.badgeLbl[j]}</span>`).join('')}
+          <span class="badge" style="background:#f0f0f0;color:#888">${r.asientos} asientos disp.</span>
+          ${r.asientos<10?'<span class="badge" style="background:#fff3e0;color:#e65100">¡Últimos asientos!</span>':''}
+        </div>
+      </div>
+      <div class="res-precio">
+        <div class="precio">$${r.precio.toLocaleString()}</div>
+        <div class="precio-sub">por persona</div>
+        <button class="btn-comprar" onclick="event.stopPropagation();abrirModalR('${from} → ${to}','${r.serv} · ${r.hora}','$${r.precio.toLocaleString()}')">Comprar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderServicio(p){
+  const s=SERVICIOS[p.tipo||'preferencial'];
+  document.getElementById('serv-titulo').textContent=s.titulo;
+  document.getElementById('serv-subtit').textContent=s.subtit;
+  document.getElementById('serv-img').src=s.img;
+  document.getElementById('serv-precio').textContent=s.precio;
+  document.getElementById('serv-bc').textContent=s.titulo;
+  document.getElementById('serv-desc-txt').textContent=s.desc;
+  document.getElementById('serv-features').innerHTML=s.features.map(f=>`<div class="feat-item"><span>${f}</span></div>`).join('');
+  document.getElementById('serv-rutas').innerHTML=s.rutas.map(r=>`<li>${r[0]}<span class="tiempo">${r[1]}</span></li>`).join('');
+}
+
+function buscar(){
+  const from=document.getElementById('h-origen').value;
+  const to=document.getElementById('h-destino').value;
+  const date=document.getElementById('h-fecha').value;
+  goTo('resultados',{from,to,date});
+}
+
+function buscarResultados(){
+  const from=document.getElementById('r-origen').value;
+  const to=document.getElementById('r-destino').value;
+  renderResultados({from,to});
+}
+
+function abrirModal(){
+  const s=document.getElementById('serv-titulo').textContent;
+  document.getElementById('m-ruta').textContent='Puerto Asís → Bogotá';
+  document.getElementById('m-info').textContent=s+' · Lun 10 Jun, 6:00 AM';
+  document.getElementById('m-precio').textContent='$95.000';
+  document.getElementById('m-total').textContent='$95.000';
+  openModalBase();
+}
+function abrirModalR(ruta,info,precio){
+  document.getElementById('m-ruta').textContent=ruta;
+  document.getElementById('m-info').textContent=info;
+  document.getElementById('m-precio').textContent=precio;
+  document.getElementById('m-total').textContent=precio;
+  openModalBase();
+}
+function openModalBase(){
+  currentStep=1;selectedSeat=null;
+  document.getElementById('step1').style.display='block';
+  document.getElementById('step2').style.display='none';
+  document.getElementById('step3').style.display='none';
+  document.getElementById('p2').style.background='#e8e8e8';
+  document.getElementById('p3').style.background='#e8e8e8';
+  document.getElementById('btn-modal-next').style.display='block';
+  document.getElementById('btn-modal-next').textContent='Continuar →';
+  renderSeats();
+  document.getElementById('modal-compra').style.display='flex';
+}
+function cerrarModal(){document.getElementById('modal-compra').style.display='none';}
+function renderSeats(){
+  const occupied=[3,7,11,15,19,23];
+  let h='';
+  for(let i=1;i<=24;i++){h+=`<div class="seat ${occupied.includes(i)?'ocupado':'libre'}" id="seat-${i}" onclick="selSeat(${i},${occupied.includes(i)})">${i}</div>`;}
+  document.getElementById('seats').innerHTML=h;
+}
+function selSeat(n,occ){
+  if(occ)return;
+  if(selectedSeat){document.getElementById('seat-'+selectedSeat).className='seat libre';}
+  selectedSeat=n;
+  document.getElementById('seat-'+n).className='seat seleccionado';
+}
+function nextStep(){
+  if(currentStep===1){
+    currentStep=2;
+    document.getElementById('step1').style.display='none';
+    document.getElementById('step2').style.display='block';
+    document.getElementById('p2').style.background='var(--c1)';
+    document.getElementById('btn-modal-next').textContent='Confirmar pago →';
+  } else if(currentStep===2){
+    currentStep=3;
+    document.getElementById('step2').style.display='none';
+    document.getElementById('step3').style.display='block';
+    document.getElementById('p3').style.background='var(--c1)';
+    document.getElementById('btn-modal-next').style.display='none';
+  }
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.display='block';
+  setTimeout(()=>t.style.display='none',3000);
+}
+
+goTo('home');
+</script>
